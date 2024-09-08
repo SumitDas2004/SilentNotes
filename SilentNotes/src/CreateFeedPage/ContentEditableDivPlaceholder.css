@@ -1,0 +1,7 @@
+.contentEditableDivPlaceHolder:not(:focus):empty::before{
+    width: max-content;
+    content: attr(data-placeholder-value);
+    color:gray;
+    position: absolute;
+    pointer-events: none;
+}

@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ::-webkit-scrollbar{
+    display: none;
+} */
+
+* {
+  font-family: "muli", sans-serif;
+  font-weight: 400;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 8px;
+  position: fixed; top: 0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: lightgray;
+  border-radius: 99999px;
+  width: 100px;
+}

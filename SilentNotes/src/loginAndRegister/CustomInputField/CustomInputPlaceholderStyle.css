@@ -1,0 +1,8 @@
+input:focus ~ .placeholder, 
+input:not(:focus):valid ~ .placeholder {
+    font-size: 0.75rem;
+    color:#e45a34;
+    opacity: 1;
+    margin-top:-17px;
+    margin-left:-4px;
+}

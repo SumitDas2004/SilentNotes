@@ -1,0 +1,98 @@
+@keyframes curtainDownAnimation {
+    from {
+        max-height:0
+    }
+    to{
+        max-height:7rem;
+    }
+}
+.curtainDownAnimationClass {
+    animation-name: curtainDownAnimation;
+    animation-duration: 200ms;
+    animation-fill-mode: forwards;
+}
+
+.formZoomInAnimation{
+    animation-name: formZoomInAnimation;
+    animation-duration: 200ms;
+    animation-fill-mode: forwards;
+}
+
+@keyframes formZoomInAnimation{
+    from {
+        transform: scale(1%, 1%);
+        opacity: 0;
+    }
+    to{
+        transform: scale(100%, 100%);
+        opacity:1;
+    }
+}
+
+@keyframes shake {
+    0%{
+        transform: rotate(15deg);
+    }
+    50%{
+        transform: rotate(-15deg);
+    }
+    100%{
+        transform: rotate(15deg);
+    }
+}
+
+.buttonDataShakeAnimation:hover *{
+    animation: shake 0.2s 0s 2;
+}
+
+
+.heartBeatAnimation{
+    animation: heartbeat 0.7s ease-in infinite;
+}
+
+@keyframes heartbeat {
+    0%{
+        transform: scale(1);
+    }
+    80%{
+        transform: scale(1.2);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+
+
+.leftSlideAnimation{
+    animation: leftSlide 0.5s ease forwards;
+}
+
+@keyframes leftSlide{
+    from{
+        left:-100%;
+    }
+    to{
+        left:0%;
+    }
+}
+
+
+.tiltedMovingLineAnimtation{
+    background-color: white;
+    position:absolute;
+    transform: rotate(-50deg);
+    animation-name: tiltedMovingLine;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    
+}
+
+
+@keyframes tiltedMovingLine{
+    from{
+        left: -150%;
+    }
+    to{
+        left: 100%;
+    }
+}
