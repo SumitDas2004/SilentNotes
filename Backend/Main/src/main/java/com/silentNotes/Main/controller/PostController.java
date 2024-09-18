@@ -45,4 +45,14 @@ public class PostController {
         else map.put("data", postService.getFeed(pageNumber, pageSize));
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    @GetMapping("/details")
+    public ResponseEntity<?> postdetails(@RequestParam("postId") String postId, @RequestParam(name="userId", required = false) String userId){
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Success.");
+        if(userId!=null && !userId.isEmpty())
+            map.put("data", postService.getPostDetails(postId, userId));
+        else map.put("data", postService.getPostDetails(postId));
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 }

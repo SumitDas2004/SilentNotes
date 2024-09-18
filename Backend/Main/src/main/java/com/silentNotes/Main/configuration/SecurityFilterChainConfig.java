@@ -32,7 +32,7 @@ public class SecurityFilterChainConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req-> req.requestMatchers("/user/login", "/user/register", "/user/isAvailable/**", "/post/feed", "/post/view/**", "/comment/getAll/**", "/colleges/**", "/comment/reply/get").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(req-> req.requestMatchers("/user/login", "/user/register", "/user/isAvailable/**", "/post/feed", "/post/view/**", "/comment/getAll/**", "/colleges/**", "/comment/reply/get", "/post/details/**").permitAll().anyRequest().authenticated())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)

@@ -32,7 +32,7 @@ const Post = ({ data }) => {
   return (
     <div
       onClick={() =>
-        navigate("/post/details", {
+        navigate("/post/details/"+data.id, {
           state: { ...data, likes: likes, liked: isLiked, views: data.views },
         })
       }

@@ -34,7 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            if (SecurityContextHolder.getContext().getAuthentication() != null || request.getRequestURI().startsWith("/user/login") || request.getRequestURI().startsWith("/user/register") || request.getRequestURI().startsWith("/user/isAvailable") ||  request.getRequestURI().startsWith("/post/feed") || request.getRequestURI().startsWith("/post/view/") || request.getRequestURI().startsWith("/comment/getAll") || request.getRequestURI().startsWith("/colleges") || request.getRequestURI().startsWith("/comment/reply/get")) {
+            if (SecurityContextHolder.getContext().getAuthentication() != null || request.getRequestURI().startsWith("/user/login") || request.getRequestURI().startsWith("/user/register") || request.getRequestURI().startsWith("/user/isAvailable") ||  request.getRequestURI().startsWith("/post/feed") || request.getRequestURI().startsWith("/post/view/") || request.getRequestURI().startsWith("/comment/getAll") || request.getRequestURI().startsWith("/colleges") || request.getRequestURI().startsWith("/comment/reply/get") || request.getRequestURI().startsWith("/post/details")) {
                 filterChain.doFilter(request, response);
                 return;
             }

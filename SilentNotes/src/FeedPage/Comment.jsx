@@ -10,25 +10,29 @@ import ReactTimeAgo from "react-time-ago";
 import { ClipLoader } from "react-spinners";
 import { useSelector } from "react-redux";
 
-
 const Comment = ({ data }) => {
   const navigate = useNavigate();
-  const {id : userId, avatar,  collegeName, username, collegeDomain} = useSelector(state=>state.userdetails)
+  const {
+    id: userId,
+    avatar,
+    collegeName,
+    username,
+    collegeDomain,
+  } = useSelector((state) => state.userdetails);
 
   const [likes, setLikes] = useState(data.totalLikes);
   const [isLiked, setIsLiked] = useState(data.liked);
   const [liking, setLiking] = useState(false);
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replies, setReplies] = useState([]);
-  const [pageNumber, setPageNumber] = useState(0)
-  const [loadedReplies, setLoadedReplies] = useState(0)
-  const [loadingReplies, setLoadingReplies] = useState(false)
-  
+  const [pageNumber, setPageNumber] = useState(0);
+  const [loadedReplies, setLoadedReplies] = useState(0);
+  const [loadingReplies, setLoadingReplies] = useState(false);
 
   const fetchReplies = useCallback(() => {
-    setLoadingReplies(true)
+    setLoadingReplies(true);
     getReplies(data, pageNumber, userId)
-      .then(({data}) => {
+      .then(({ data }) => {
         setReplies((replies) => {
           const set = new Set(replies.map((reply) => reply.id));
           const newReplies = data.data;
@@ -36,9 +40,9 @@ const Comment = ({ data }) => {
           newReplies.forEach((reply) => {
             if (!set.has(reply.id)) newState.push(reply);
           });
-          if(newReplies.length===5)setPageNumber(pageNumber+1)
-          setLoadedReplies(loadedReplies+newReplies.length)
-          setLoadingReplies(false)
+          if (newReplies.length === 5) setPageNumber(pageNumber + 1);
+          setLoadedReplies(loadedReplies + newReplies.length);
+          setLoadingReplies(false);
           return newState;
         });
       })
@@ -51,7 +55,7 @@ const Comment = ({ data }) => {
             (response && response.data && response.data.error) ||
               "Something went wrong"
           );
-          setLoadingReplies(false)
+        setLoadingReplies(false);
       });
   }, [replies, pageNumber, loadedReplies]);
 
@@ -82,7 +86,7 @@ const Comment = ({ data }) => {
                 <i className="fa-solid fa-circle"></i>
               </span>
               <span className="text-xs flex justify-center items-center h-full">
-              <ReactTimeAgo  date={new Date(data.createdAt)} locale="en-US"/>
+                <ReactTimeAgo date={new Date(data.createdAt)} locale="en-US" />
               </span>
             </span>
             <div className="mt-2 break-all">{data.body}</div>
@@ -95,8 +99,7 @@ const Comment = ({ data }) => {
                   setLiking(true);
                   const res = await axios({
                     url:
-                      import.meta.env.VITE_BACKEND +
-                      `/like/comment/${data.id}`,
+                      import.meta.env.VITE_BACKEND + `/like/comment/${data.id}`,
                     method: "POST",
                     withCredentials: true,
                   });
@@ -129,8 +132,7 @@ const Comment = ({ data }) => {
               </span>
               <span>{likes}</span>
             </span>
-            |
-            {/* Reply button */}
+            |{/* Reply button */}
             <button
               onClick={() => setShowReplyBox(true)}
               className="text-sm buttonDataShakeAnimation active:text-accent hover:bg-gray-100 transition-all py-1 px-2 rounded-full"
@@ -150,13 +152,24 @@ const Comment = ({ data }) => {
               collegeDomain={collegeDomain}
             />
           )}
-          {
-            replies.map((reply, ind) => <Reply key={ind} data={reply} />)
-          }
+          {replies.map((reply, ind) => (
+            <Reply key={ind} data={reply} />
+          ))}
           {/* Show replies button */}
-          {replies.length<data.replyCount && <span onClick={fetchReplies} className="text-blue-500 flex justify-start px-4 hover:text-accent items-center text-xs">Show {data.replyCount-loadedReplies} replies</span>}
+          {replies.length < data.replyCount && (
+            <span
+              onClick={fetchReplies}
+              className="text-blue-500 flex justify-start px-4 hover:text-accent items-center text-xs"
+            >
+              Show {data.replyCount - loadedReplies} replies
+            </span>
+          )}
           {/* Reply loader */}
-          {loadingReplies && <span className="flex justify-center items-cente"><ClipLoader color="gray" size={'25px'}/></span>}
+          {loadingReplies && (
+            <span className="flex justify-center items-cente">
+              <ClipLoader color="gray" size={"25px"} />
+            </span>
+          )}
         </div>
       </span>
     </section>
@@ -165,11 +178,19 @@ const Comment = ({ data }) => {
 
 export default memo(Comment);
 
-
-
-const ReplyInput = ({ commentId, setShowReplyBox, setReplies, userId, avatar,  collegeName, username, collegeDomain }) => {
+const ReplyInput = ({
+  commentId,
+  setShowReplyBox,
+  setReplies,
+  userId,
+  avatar,
+  collegeName,
+  username,
+  collegeDomain,
+}) => {
   const navigate = useNavigate();
   const inputRef = useRef();
+  const [isReplying, setIsReplying] = useState(false);
   return (
     <span className="my-2 flex flex-col w-full">
       <div
@@ -180,16 +201,45 @@ const ReplyInput = ({ commentId, setShowReplyBox, setReplies, userId, avatar,  c
       ></div>
       <button
         onClick={() => {
-          const data = { body: DOMPurify.sanitize(inputRef.current.innerHTML.trim(), {FORBID_ATTR:["src", "style", "href", "onClick", "class", "className"], FORBID_TAGS:["b", "i", "u", "a", "button"]}), commentId }
+          setIsReplying(true);
+          const data = {
+            body: DOMPurify.sanitize(inputRef.current.innerHTML.trim(), {
+              FORBID_ATTR: [
+                "src",
+                "style",
+                "href",
+                "onClick",
+                "class",
+                "className",
+              ],
+              FORBID_TAGS: ["b", "i", "u", "a", "button"],
+            }),
+            commentId,
+          };
           reply(data)
             .then((res) => {
-              toast.success("Reply added successfully.")
+              toast.success("Reply added successfully.");
               setShowReplyBox(false);
               const id = res.data.id;
-              setReplies(replies=>[{id, ...data, likeCnt:0, liked:false, createdAt:Date.now(), userId, avatar, college:collegeName, username, collegeDomain }, ...replies])
+              setReplies((replies) => [
+                {
+                  id,
+                  ...data,
+                  likeCnt: 0,
+                  liked: false,
+                  createdAt: Date.now(),
+                  userId,
+                  avatar,
+                  college: collegeName,
+                  username,
+                  collegeDomain,
+                },
+                ...replies,
+              ]);
+              setIsReplying(false);
             })
             .catch(({ response }) => {
-              if(response && response.status && response.status === 401) {
+              if (response && response.status && response.status === 401) {
                 navigate("/sign-in");
                 toast.info("Hey! join the discussions here.");
               } else
@@ -197,11 +247,13 @@ const ReplyInput = ({ commentId, setShowReplyBox, setReplies, userId, avatar,  c
                   (response && response.data && response.data.error) ||
                     "Something went wrong"
                 );
+
+              setIsReplying(false);
             });
         }}
         className=" self-end text-sm p-1 text-blue-500 font-bold right-0 mr-2 focus:text-blue-700 active:text-blue-700 transition-all"
       >
-        Post
+        {!isReplying ? "Post" : <ClipLoader color="rgb(59 130 246 / 1)" size={"25px"} />}
       </button>
     </span>
   );
@@ -211,7 +263,9 @@ const getReplies = async (data, pageNumber, userId) => {
   const res = await axios({
     url:
       import.meta.env.VITE_BACKEND +
-      `/comment/reply/get?commentId=${data.id}&pageSize=5&pageNumber=${pageNumber}${userId && "&userId="+userId}`,
+      `/comment/reply/get?commentId=${
+        data.id
+      }&pageSize=5&pageNumber=${pageNumber}${userId && "&userId=" + userId}`,
     method: "GET",
   });
   return res;

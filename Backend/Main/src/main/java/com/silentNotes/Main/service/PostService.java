@@ -71,4 +71,13 @@ public class PostService {
         return posts.stream().map(FeedResponseDTO::convertToFeedResponseDTO).collect(Collectors.toList());
     }
 
+    public FeedResponseDTO getPostDetails(String postId){
+        Post post = getPost(postId);
+        return FeedResponseDTO.convertToFeedResponseDTO(post);
+    }
+    public FeedResponseDTO getPostDetails(String postId, String userId){
+        Post post = getPost(postId);
+        Users user = userService.getUserById(userId);
+        return FeedResponseDTO.convertToFeedResponseDTO(post, user);
+    }
 }
