@@ -106,7 +106,7 @@ const PostDetails = () => {
   return (
     <section className="mb-10 max-w-[700px] transition-all cursor-pointer relative border border-gray-400 hover:shadow-lg rounded-xl my-4 w-[95%] bg-white px-3 py-8 h-min text-textcolor">
       
-      {postDetails===null && <div className="w-full flex justify-center items-center mt-10"><Cl color="gray" size="20px"/></div>}
+      {postDetails===null && <div className="w-full flex justify-center items-center mt-10"><ClipLoader color="gray" size="20px"/></div>}
       
       {postDetails !==null && (
         <>
