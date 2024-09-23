@@ -9,7 +9,7 @@ import CollegeDetailsInput from "./CollegeDetailsInput";
 import PasswordInput from "./PasswordInput";
 import { useNavigate } from "react-router-dom";
 
-const Register = ({ setIsPasswordFieldActive }) => {
+const Register = () => {
   const [collegeDetails, setCollegeDetails] = useState(null);
   const [email, setEmail] = useState("");
   const [collegeName, setCollegeName] = useState("");
@@ -20,8 +20,6 @@ const Register = ({ setIsPasswordFieldActive }) => {
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(-2); //-1 = not available, 1 means available, -2 means username not entered and 0 means loading
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordActive, setPasswordActive] = useState(false);
-  const [confirmPasswordActive, setConfirmPasswordActive] = useState(false);
   const [loadingCollege, setCollegeLoading] = useState(false);
   const [registering, setRegistering] = useState(false);
 
@@ -73,16 +71,10 @@ const Register = ({ setIsPasswordFieldActive }) => {
     } else setIsUsernameAvailable(-2);
   }, [username]);
 
-  useEffect(() => {
-    setIsPasswordFieldActive(false);
-  }, []);
-
-  useEffect(() => {
-    setIsPasswordFieldActive(passwordActive || confirmPasswordActive);
-  }, [passwordActive, confirmPasswordActive]);
-
   return (
-    <>
+    <div className="-z-10 relative formZoomInAnimation h-full max-h-[450px] rounded-md w-full max-w-[500px] bg-white flex flex-col justify-evenly items-center">
+      <span className='flex text-gray-400 text-2xl top-4 right-4 absolute cursor-pointer' onClick={()=>navigate("/")}><i className="fa-solid fa-xmark"></i></span>
+      <span className="text-4xl font-bold text-accent">Register</span>
       {!isValidCollegeEmail && (
         <CollegeDetailsInput
           goToNext={() => {
@@ -164,15 +156,14 @@ const Register = ({ setIsPasswordFieldActive }) => {
               });
           }}
           registering={registering}
-          setPasswordActive={setPasswordActive}
-          setConfirmPasswordActive={setConfirmPasswordActive}
           password={password}
           setPassword={setPassword}
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
         />
       )}
-    </>
+      <span><span>New to SilentNotes?</span><button className="text-accent font-bold ml-1 hover:underline" onClick={()=>navigate("/auth/login")}>Login</button></span>
+    </div>
   );
 };
 

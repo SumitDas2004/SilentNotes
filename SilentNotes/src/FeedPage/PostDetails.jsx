@@ -44,7 +44,7 @@ const PostDetails = () => {
         .then(({ data }) => {
           setPostDetails(data.data);
           setIsLiked(data.data.liked);
-          setLikes(data.data.likeCnt);
+          setLikes(data.data.likes);
         })
         .catch(({ response }) => {
           toast.error(
@@ -97,18 +97,15 @@ const PostDetails = () => {
     };
   }, [postDetails]);
 
-
-  
-
-
-
-
   return (
     <section className="mb-10 max-w-[700px] transition-all cursor-pointer relative border border-gray-400 hover:shadow-lg rounded-xl my-4 w-[95%] bg-white px-3 py-8 h-min text-textcolor">
-      
-      {postDetails===null && <div className="w-full flex justify-center items-center mt-10"><ClipLoader color="gray" size="20px"/></div>}
-      
-      {postDetails !==null && (
+      {postDetails === null && (
+        <div className="w-full flex justify-center items-center mt-10">
+          <ClipLoader color="gray" size="20px" />
+        </div>
+      )}
+
+      {postDetails !== null && (
         <>
           {" "}
           <span className="flex items-center">
@@ -133,7 +130,7 @@ const PostDetails = () => {
             </span>
           </span>
           <div
-            className="break-all mt-4"
+            className="break-all mt-4 text-sm"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(postDetails.body, {
                 ADD_ATTR: ["target", "className"],
@@ -150,7 +147,7 @@ const PostDetails = () => {
                     setLiking(true);
                     throttleSeed.current = true;
                     if (!userId) {
-                      navigate("/sign-in");
+                      navigate("/auth/login");
                       return;
                     }
                     const res = await axios({

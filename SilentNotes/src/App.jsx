@@ -6,8 +6,10 @@ import CreatePost from "./CreateFeedPage/CreatePost";
 import PostDetails from "./FeedPage/PostDetails";
 import Navbar from "./Navbar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import en from "javascript-time-ago/locale/en"
+import en from "javascript-time-ago/locale/en";
 import TimeAgo from "javascript-time-ago";
+import Login from "./loginAndRegister/Login";
+import Register from "./loginAndRegister/Register/Register";
 
 const router = createBrowserRouter([
   {
@@ -19,8 +21,18 @@ const router = createBrowserRouter([
         element: <CreatePost />,
       },
       {
-        path: "/sign-in",
+        path: "/auth",
         element: <LoginRegisterIndex />,
+        children:[
+          {
+            path:"/auth/login",
+            element: <Login/>
+          },
+          {
+            path:"/auth/register",
+            element: <Register/>
+          }
+        ]
       },
     ],
   },
@@ -31,8 +43,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  TimeAgo.addDefaultLocale(en)
-  
+  TimeAgo.addDefaultLocale(en);
+
   return (
     <>
       <Navbar />
@@ -50,4 +62,4 @@ function App() {
 
 export default App;
 
-export {router}
+export { router };

@@ -24,12 +24,12 @@ export const PostDetailsFooter = ({ postId }) => {
         style={{ marginRight: "10px", width:"100px" }}
         onClick={async() => {
           if(isCommenting)return ;
-          setIsCommenting(true)
           try{
           if(!inputField.current.innerText.trim()){
             toast.warn("Comment can't be empty.")
             return ;
           }
+          setIsCommenting(true)
           const body = inputField.current.innerText.trim()
           inputField.current.innerText = ""
           await axios({
@@ -45,7 +45,7 @@ export const PostDetailsFooter = ({ postId }) => {
           setIsCommenting(false)
           toast.success("Added comment successfully.")
         }catch(err){
-            if(err.response.status===401)navigate("/sign-in")
+            if(err.response.status===401)navigate("/auth/login")
             toast.error((err.response && err.response.data && err.response.data.error) || "Something went wrong.")
           }
         }}

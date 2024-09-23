@@ -4,7 +4,7 @@ import CustomInputField from "../CustomInputField/CustomInputField"
 import { ClipLoader } from "react-spinners";
 const CollegeDetailsInput = ({ goToNext, email, setEmail, collegeName, setCollegeName, loading, collegeDetails }) => {
   return (
-    <span className="formZoomInAnimation w-full h-max flex flex-col justify-center items-center">
+    <>
       <div className="h-max w-9/12 mb-5 relative">
         <span className="inline-block w-full relative">
           <input
@@ -37,7 +37,7 @@ const CollegeDetailsInput = ({ goToNext, email, setEmail, collegeName, setColleg
             goToNext()
         }}
       />
-    </span>
+    </>
   );
 };
 

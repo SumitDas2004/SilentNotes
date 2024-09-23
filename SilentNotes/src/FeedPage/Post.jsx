@@ -37,7 +37,7 @@ const Post = ({ data }) => {
         })
       }
       ref={ref}
-      className=" transition-all cursor-pointer relative border border-gray-400 hover:shadow-md hover:shadow-[#0000003a] rounded-xl my-4 w-[95%] max-w-[700px] bg-white px-3 py-8 h-min text-textcolor"
+      className=" transition-all cursor-pointer relative border border-gray-400 hover:shadow-md hover:shadow-[#0000003a] rounded-xl my-4 w-[95%] max-w-[800px] bg-white px-3 py-8 h-min text-textcolor"
     >
       <span className="flex items-center">
         <span className="min-h-14 min-w-14 overflow-hidden inline-block rounded-full">
@@ -63,13 +63,14 @@ const Post = ({ data }) => {
         </span>
       </span>
       <div
-        className="break-all mt-4"
+        className="break-all mt-4 text-sm"
         dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(data.body, {
+          __html: DOMPurify.sanitize(data.body.substring(0, 400), {
             ADD_ATTR: ["target", "className"],
           }),
         }}
       ></div>
+      {data.body.length>400 && <span className="text-sm text-blue-500 hover:underline">see more...</span>}
       <span className="mt-4 text-sm flex">
         <span
           onClick={async (e) => {
@@ -80,7 +81,7 @@ const Post = ({ data }) => {
                 setLiking(true);
                 throttleSeed.current = true;
                 if (!userId) {
-                  navigate("/sign-in");
+                  navigate("/auth/login");
                   return;
                 }
                 const res = await axios({

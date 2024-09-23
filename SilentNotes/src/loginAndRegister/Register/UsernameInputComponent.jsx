@@ -13,7 +13,7 @@ const UsernameInputComponent = ({
   setAvatar,
 }) => {
   return (
-    <span className="formZoomInAnimation w-full h-max flex flex-col justify-center items-center">
+    <>
       <AvatarStore setPlayerAvatar={setAvatar} />
       <span className="flex justify-center w-10/12 relative">
         <CustomInputField
@@ -46,7 +46,7 @@ const UsernameInputComponent = ({
           else toast.error("Please choose an unique username.")
         }}
       />
-    </span>
+    </>
   );
 };
 

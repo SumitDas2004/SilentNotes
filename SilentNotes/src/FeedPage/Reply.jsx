@@ -56,7 +56,7 @@ const Reply = ({data}) => {
                 }
               ).catch(({response})=>{
                 if(response && response.status && response.status === 401) {
-                  navigate("/sign-in");
+                  navigate("/auth/login");
                   toast.info("Hey! join the discussions here.");
                 } else
                   toast.error(

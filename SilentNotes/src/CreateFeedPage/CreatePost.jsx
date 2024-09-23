@@ -26,7 +26,7 @@ const CreatePost = () => {
   const emojiPalateContainer = useRef();
 
   useEffect(() => {
-    if (!username) navigate("/sign-in");
+    if (!username) navigate("/auth/login");
     containerRef.current.addEventListener("mousedown", (e) => {
       if (bodyRef.current && !bodyRef.current.contains(e.target)) navigate("/");
     });
@@ -197,7 +197,7 @@ const CreatePost = () => {
                 })
                 .catch(({ response }) => {
                   setIsPosting(false);
-                  if (response.status === 401) navigate("/sign-in");
+                  if (response.status === 401) navigate("/auth/login");
                   toast.error(response.data.error || "Something went wrong.");
                 });
             }}

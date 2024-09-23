@@ -48,7 +48,7 @@ const Comment = ({ data }) => {
       })
       .catch(({ response }) => {
         if (response.status === 401) {
-          navigate("/sign-in");
+          navigate("/auth/login");
           toast.info("Hey! join the discussion here.");
         } else
           toast.error(
@@ -108,7 +108,7 @@ const Comment = ({ data }) => {
                   setLiking(false);
                 } catch ({ response }) {
                   if (response.status === 401) {
-                    navigate("/sign-in");
+                    navigate("/auth/login");
                     toast.info("Hey! join the discussion here.");
                   } else
                     toast.error(
@@ -240,7 +240,7 @@ const ReplyInput = ({
             })
             .catch(({ response }) => {
               if (response && response.status && response.status === 401) {
-                navigate("/sign-in");
+                navigate("/auth/login");
                 toast.info("Hey! join the discussions here.");
               } else
                 toast.error(

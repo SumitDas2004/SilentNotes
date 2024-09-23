@@ -57,7 +57,7 @@ const Navbar = () => {
           <RippleButton
             value="Login"
             style={{ marginRight: "1rem", fontWeight: "800" }}
-            onClick={()=>router.navigate("/sign-in")}
+            onClick={()=>router.navigate("/auth/login")}
           />
       )}
 
