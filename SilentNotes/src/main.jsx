@@ -10,13 +10,28 @@ import Login from "./loginAndRegister/Login.jsx";
 import Register from "./loginAndRegister/Register/Register.jsx";
 import OTPValidation from "./loginAndRegister/OTPValidation.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import PostDetails from '../src/FeedPage/PostDetails.jsx'
+import PostDetails from "../src/FeedPage/PostDetails.jsx";
+import FeedPage from "./FeedPage/FeedPage.jsx";
+import Navbar from "./Navbar.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <>
+        <Navbar />
+        <App />
+      </>
+    ),
     children: [
+      {
+        path: "/",
+        element: <FeedPage />,
+      },
+      {
+        path: "/post/details/:id",
+        element: <PostDetails />,
+      },
       {
         path: "/post/create",
         element: <CreatePost />,
@@ -24,27 +39,23 @@ const router = createBrowserRouter([
       {
         path: "/auth",
         element: <LoginRegisterIndex />,
-        children:[
+        children: [
           {
-            path:"/auth/login",
-            element: <Login/>
+            path: "/auth/login",
+            element: <Login />,
           },
           {
-            path:"/auth/register",
-            element: <Register/>
+            path: "/auth/register",
+            element: <Register />,
           },
           {
-            path:"/auth/otp",
-            element: <OTPValidation/>
-          }
-        ]
-      },
+            path: "/auth/otp",
+            element: <OTPValidation />,
+          },
+        ],
+      }
     ],
   },
-  {
-    path: "/post/details/:id",
-    element: <PostDetails />,
-  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
