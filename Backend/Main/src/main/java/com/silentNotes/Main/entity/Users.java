@@ -27,6 +27,7 @@ public class Users implements UserDetails {
     private String college;
     private String avatar;
     private String email;
+    private boolean verified;// Flag to check if user's email has been verified or not
     @CreationTimestamp
     private Date createdAt;
     @UpdateTimestamp
@@ -49,6 +50,11 @@ public class Users implements UserDetails {
     @Override
     public String getUsername(){
         return this.id;
+    }
+
+    @Override
+    public boolean isEnabled(){
+        return this.verified;
     }
 
     public String getActualUsername(){

@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import RippleButton from "../RippleButton/RippleButton";
 import axios from "axios";
-import { router } from "../App";
 import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 const LogoutBox = ({ setShowLogout, avatarContainer }) => {
   const [loggingOut, setLoggingOut] = useState(false);
+  const navigate = useNavigate()
 
   const logoutEvent = (e) => {
     if (
@@ -27,7 +28,7 @@ const LogoutBox = ({ setShowLogout, avatarContainer }) => {
       className="curtainDownAnimationClass overflow-hidden flex justify-center items-center h-32 w-60 bg-slate-50 shadow-md shadow-[#00000048] rounded-lg absolute right-6 top-16 mt-1"
     >
       <RippleButton
-        value={loggingOut?<ClipLoader color="white" size={20}/>:"Logout"}
+        value={loggingOut?<ClipLoader color="white" size={"20px"}/>:"Logout"}
         onClick={() => {
           if(loggingOut)return ;
           setLoggingOut(true)
@@ -36,7 +37,7 @@ const LogoutBox = ({ setShowLogout, avatarContainer }) => {
             withCredentials: true,
           }).then((res) => {
             setLoggingOut(false)
-            router.navigate("/");
+            navigate("/");
             window.location.reload();
           }).catch(()=>{
             setLoggingOut(false)

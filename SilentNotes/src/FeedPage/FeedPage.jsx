@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import "../animations.css";
+import Navbar from "../Navbar";
 
 
 

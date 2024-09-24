@@ -17,7 +17,7 @@ const CollegeDetailsInput = ({ goToNext, email, setEmail, collegeName, setColleg
             className="text-base w-full pl-2 outline-none bg-transparent text-textcolor"
           />
           {loading && <span className="inline-block absolute -ml-4">
-          <ClipLoader size="15" color="gray"/></span>}
+          <ClipLoader size="15px" color="gray"/></span>}
           <span className=" duration-300 transition-all placeholder px-3 left-0 absolute -z-10 text-gray-400">
             Enter college name
           </span>

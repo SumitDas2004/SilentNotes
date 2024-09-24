@@ -15,4 +15,5 @@ public class UserDetailsDTO {
     private String collegeName;
     private String collegeDomain;
     private String avatar;
+    private boolean verified;
 }

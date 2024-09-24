@@ -14,6 +14,7 @@ import com.silentNotes.Main.entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -69,6 +70,7 @@ public class UserService {
                 .avatar(user.getAvatar())
                 .collegeDomain(Utils.extractDomain(user.getEmail()))
                 .collegeName(user.getCollege())
+                .verified(user.isVerified())
                 .build();
     }
 
@@ -81,6 +83,11 @@ public class UserService {
         Optional<Users> optionalUser = userDao.findById(id);
         if(optionalUser.isEmpty())throw new UserDoesNotExistException();
         return optionalUser.get();
+    }
+
+    @Transactional
+    public void validateUser(String id){
+        userDao.validateUser(id);
     }
 
     public Users saveUser(Users user){

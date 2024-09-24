@@ -18,7 +18,7 @@ const PasswordInput = ({registering, password, setPassword, setConfirmPassword, 
         placeholder={"Confirm password"}
         isPassword={true}
       />
-      <RippleButton value={!registering?"register":<ClipLoader size={20} color="white"/>} onMouseDown={register}/>
+      <RippleButton value={!registering?"register":<ClipLoader size={"20px"} color="white"/>} onMouseDown={register}/>
     </>
   );
 };

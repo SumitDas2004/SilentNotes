@@ -20,7 +20,7 @@ export const PostDetailsFooter = ({ postId }) => {
         className="contentEditableDivPlaceHolder text-sm my-3 mx-1 sm:mx-4 outline-none text-wrap whitespace-pre overflow-y-auto text-md px-3 py-2 rounded-md text-textcolor w-[80%] max-w-[600px] max-h-20 bg-white"
       ></div>
       <RippleButton
-        value={!isCommenting?"Comment":<ClipLoader size={20} color="white"/>}
+        value={!isCommenting?"Comment":<ClipLoader size={"20px"} color="white"/>}
         style={{ marginRight: "10px", width:"100px" }}
         onClick={async() => {
           if(isCommenting)return ;

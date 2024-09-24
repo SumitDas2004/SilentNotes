@@ -6,7 +6,7 @@ const RippleButton = ({ value, onClick=()=>{}, onMouseDown=()=>{}, style }) => {
     <button
     type="button"
       style={style}
-      className=" select-none overflow-hidden w-max relative bg-accent text-white px-2 py-1 rounded-sm font-semibold hover:bg-[#ef5656] transition-all"
+      className="h-10 select-none overflow-hidden w-max relative bg-accent text-white px-2 py-1 rounded-sm font-semibold hover:bg-[#ef5656] transition-all"
       onClick={(e) => {
         onClick();
       }}

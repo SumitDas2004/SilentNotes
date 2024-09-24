@@ -1,6 +1,7 @@
 package com.silentNotes.Main.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.silentNotes.Main.Exceptions.EmailNotVerifiedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,11 +27,16 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JWTFilter extends OncePerRequestFilter {
-    @Autowired
     JWTService jwtService;
-
-    @Autowired
     UserDetailsService userDetailsService;
+
+    @Value("${client.domain}")
+    String clientDomain;
+
+    public JWTFilter(JWTService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -45,19 +52,30 @@ public class JWTFilter extends OncePerRequestFilter {
                 if (username != null && expiresAt != null && expiresAt.after(new Date(System.currentTimeMillis()))) {
                     UserDetails user = userDetailsService.loadUserByUsername(username);
                     if (user != null) {
-                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
-                        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                        filterChain.doFilter(request, response);
-                    }else throw new Exception("user not found");
+                        if(request.getRequestURI().startsWith("/user/details") || request.getRequestURI().startsWith("/otp/") || user.isEnabled()) {
+                            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
+                            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                            filterChain.doFilter(request, response);
+                        }else throw new EmailNotVerifiedException();
+                    }else throw new Exception("User not found");
                 }else throw new Exception("Invalid token.");
             }else throw new Exception("Token not present.");
-        }catch (Exception e){
+        }
+        catch (EmailNotVerifiedException e){
             log.error(e.getMessage());
             response.setStatus(401);
             response.setContentType("application/json");
             Map<String, String> map = new LinkedHashMap<>();
-            map.put("status", "1");
+            map.put("error", e.getMessage());
+            ObjectMapper om= new ObjectMapper();
+            response.getWriter().write(om.writeValueAsString(map));
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+            response.setStatus(401);
+            response.setContentType("application/json");
+            Map<String, String> map = new LinkedHashMap<>();
             map.put("error", "Unauthorized, please login.");
             ObjectMapper om= new ObjectMapper();
             response.getWriter().write(om.writeValueAsString(map));
