@@ -2,20 +2,23 @@ import React, { useRef, useState, useEffect, memo } from "react";
 import { useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { PostDetailsFooter } from "./PostDetailsFooter";
 import Comment from "./Comment";
 import ReactTimeAgo from "react-time-ago";
 import { ClipLoader } from "react-spinners";
+import { visitPost } from "../Redux/PostsReducer";
 
 const PostDetails = () => {
   const { id } = useParams();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const userId = useSelector((state) => state.userdetails.id);
+  const visitedPosts = useSelector((state) => state.posts.visitedPosts);
   const userdetailsStatus = useSelector((state) => state.userdetails.status);
 
   const marker = useRef();
@@ -30,9 +33,11 @@ const PostDetails = () => {
   const throttleSeed = useRef();
 
   const [comments, setComments] = useState([]);
+  const isUserAuthenticationDone = useRef(false)
 
   useEffect(() => {
-    if (userdetailsStatus !== 0) {
+    if (userdetailsStatus !== 0 && !isUserAuthenticationDone.current) {
+      isUserAuthenticationDone.current = true
       axios({
         url:
           import.meta.env.VITE_BACKEND +
@@ -57,6 +62,13 @@ const PostDetails = () => {
   useEffect(() => {
     let observer = null;
     if (userdetailsStatus !== 0 && postDetails != null) {
+      if (!visitedPosts.includes(id)) {
+        fetch(import.meta.env.VITE_BACKEND + "/post/view/" + id, {
+          method: "POST",
+        }).then((res) => {
+          dispatch(visitPost(id));
+        });
+      }
       observer = new IntersectionObserver(
         (element) => {
           setLoadingComments(true);
@@ -216,7 +228,6 @@ const PostDetails = () => {
         </>
       )}
     </section>
-
   );
 };
 

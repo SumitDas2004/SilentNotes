@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import "../animations.css";
-import { addPosts } from "../Redux/PostsReducer";
+import { addPosts, nextPage } from "../Redux/PostsReducer";
 
 
 
@@ -17,8 +17,13 @@ const FeedPage = () => {
   const userdetailsStatus = useSelector((state) => state.userdetails.status);
   const posts = useSelector(state=>state.posts.posts)  
   const [isLoading, setIsLoading] = useState(true)
-  const pageNumber = useRef(0);
+  const pageNumberState = useSelector(state=>state.posts.pageNumber)
+  const pageNumber = useRef(pageNumberState);
   const marker = useRef();
+
+useEffect(()=>{
+    pageNumber.current = pageNumberState
+  }, [pageNumberState])
 
   const getFeed = useCallback( async () => {
     try {
@@ -26,13 +31,13 @@ const FeedPage = () => {
       const { data } = await axios({
         url:
           import.meta.env.VITE_BACKEND +
-          `/post/feed?pageNumber=${pageNumber.current}&pageSize=10 ${
+          `/post/feed?pageNumber=${pageNumber.current}&pageSize=3 ${
             userId && "&userId=" + userId
           }`,
         method: "GET",
       });      
       dispatch(addPosts(data.data))
-      if (data.data.length > 0) pageNumber.current = pageNumber.current + 1;
+      if (data.data.length > 0) dispatch(nextPage())
       setIsLoading(false)
     } catch ({ response }) {
       toast.error(response.data.error || "Something went wrong");
@@ -41,12 +46,11 @@ const FeedPage = () => {
   }, [userdetailsStatus])
 
   useEffect(() => {
-    if(userdetailsStatus===0)return ;
     let observer = null;
     if (userdetailsStatus !== 0) {
-      observer = new IntersectionObserver(() => {
-        getFeed();
-        getFeed();
+      observer = new IntersectionObserver((elm) => {
+        if(elm[0].isIntersecting)
+          getFeed();
       });
       observer.observe(marker.current);
     }
@@ -60,18 +64,18 @@ const FeedPage = () => {
 
 
   return (
-    <span className="w-full flex justify-center ">
+    <span className="w-full flex justify-center pb-20 ">
       <Outlet />
 
       <span className=" lg:w-3/5 w-full flex flex-col items-center justify-center">
         {posts.map((post) => (
           <Post key={post.id} data={post} />
         ))}
-        <div ref={marker} className="mt-4 mb-20"></div>
+        <div ref={marker} className="mt-4"></div>
         {isLoading && (
           <>
             <LoadingPost />
-            <LoadingPost />
+            {/* <LoadingPost /> */}
           </>
         )}
       </span>

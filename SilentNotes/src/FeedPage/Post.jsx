@@ -3,15 +3,19 @@ import DOMPurify from "dompurify";
 import "../animations.css";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import ReactTimeAgo from "react-time-ago";
+import { visitPost } from "../Redux/PostsReducer";
 
 
 
 const Post = ({ data }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const visitedPosts = useSelector(state=>state.posts.visitedPosts)
 
   const userId = useSelector((state) => state.userdetails.id);
 
@@ -27,6 +31,15 @@ const Post = ({ data }) => {
   });
 
   const throttleSeed = useRef(false);
+
+  const view = (id) => {
+    if(visitedPosts.includes(id))return ;
+    fetch(import.meta.env.VITE_BACKEND + "/post/view/" + id, {
+      method:"POST"
+    }).then(res=>{
+      dispatch(visitPost(id))
+    })
+  };
 
   return (
     <div
@@ -139,9 +152,4 @@ const Post = ({ data }) => {
 
 export default memo(Post);
 
-const view = (id) => {
-  fetch(import.meta.env.VITE_BACKEND + "/post/view/" + id, {
-    method:"POST",
-    keepalive:true
-  })
-};
+

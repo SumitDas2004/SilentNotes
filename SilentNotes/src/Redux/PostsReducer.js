@@ -4,6 +4,8 @@ const PostReducer = createSlice({
   name: "postReducer",
   initialState: {
     posts: [],
+    pageNumber: 0,
+    visitedPosts: []
   },
   reducers: {
     addPosts: (state, action) => {
@@ -17,8 +19,14 @@ const PostReducer = createSlice({
     //   console.log(current(state.posts));
       state.posts = newState
     },
+    nextPage:(state)=>{
+      state.pageNumber+=1;
+    },
+    visitPost:(state, action)=>{
+      state.visitedPosts = [...state.visitedPosts, action.payload]
+    }
   },
 });
 
-export const { addPosts } = PostReducer.actions;
+export const { addPosts, nextPage, visitPost } = PostReducer.actions;
 export default PostReducer.reducer;
