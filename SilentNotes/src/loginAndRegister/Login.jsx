@@ -23,7 +23,7 @@ const Login = () => {
       <span className="text-4xl font-bold text-accent">Login</span>
       <CustomInputField placeholder={"Username"} inputFieldState={username} setInputFieldState={setUsername}/>
       <CustomInputField placeholder={"Password"} isPassword={true} inputFieldState={password} setInputFieldState={setPassword} />
-      <RippleButton value={!isLoggingIn?"Login":<ClipLoader size="20" color="white"/>} onMouseDown={()=>{
+      <RippleButton value={!isLoggingIn?"Login":<ClipLoader size="20px" color="white"/>} onMouseDown={()=>{
         if(!username)toast.warn("Username is empty.")
         else if(!password)toast.warn("Password is empty.")
         else{

@@ -31,9 +31,7 @@ const Post = ({ data }) => {
   return (
     <div
       onClick={() =>
-        navigate("/post/details/"+data.id, {
-          state: { ...data, likes: likes, liked: isLiked, views: data.views },
-        })
+        navigate("/post/details/"+data.id)
       }
       ref={ref}
       className=" transition-all cursor-pointer relative border border-gray-400 hover:shadow-md hover:shadow-[#0000003a] rounded-xl my-4 w-[95%] max-w-[800px] bg-white px-3 py-8 h-min text-textcolor"

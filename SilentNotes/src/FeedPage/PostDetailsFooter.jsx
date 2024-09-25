@@ -12,7 +12,7 @@ export const PostDetailsFooter = ({ postId }) => {
   const [isCommenting, setIsCommenting] = useState(false)
 
   return (
-    <footer className=" items-center cursor-auto w-full h-max flex justify-center bg-primary fixed bottom-0 left-0 z-10">
+    <footer className="  items-center cursor-auto w-full h-max flex justify-center bg-primary fixed bottom-0 left-0 z-30">
       <div
         ref={inputField}
         contentEditable={true}

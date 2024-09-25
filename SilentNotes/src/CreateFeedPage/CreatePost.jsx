@@ -158,7 +158,7 @@ const CreatePost = () => {
             ></i>
           </span>
           <RippleButton
-            value={isPosting ? <ClipLoader size="20" color="white" /> : "Post"}
+            value={isPosting ? <ClipLoader size="20px" color="white" /> : "Post"}
             style={{
               fontWeight: "800",
               background: "rgb(59 130 246 /1)",

@@ -1,20 +1,21 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import Post from "./Post";
 import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "../animations.css";
-import Navbar from "../Navbar";
+import { addPosts } from "../Redux/PostsReducer";
 
 
 
 const FeedPage = () => {
+  const dispatch = useDispatch()
   const navigate= useNavigate()
   const userId = useSelector((state) => state.userdetails.id);
   const userdetailsStatus = useSelector((state) => state.userdetails.status);
-  const [posts, setPosts] = useState([]);
+  const posts = useSelector(state=>state.posts.posts)  
   const [isLoading, setIsLoading] = useState(true)
   const pageNumber = useRef(0);
   const marker = useRef();
@@ -29,16 +30,8 @@ const FeedPage = () => {
             userId && "&userId=" + userId
           }`,
         method: "GET",
-      });
-      setPosts((posts) => {
-        const set = new Set(posts.map(post=>post.id))
-        const newPosts = data.data
-        const newState = [...posts]
-        newPosts.forEach(post=>{
-          if(!set.has(post.id))newState.push(post);
-        })
-        return newState
-      });
+      });      
+      dispatch(addPosts(data.data))
       if (data.data.length > 0) pageNumber.current = pageNumber.current + 1;
       setIsLoading(false)
     } catch ({ response }) {
@@ -48,6 +41,7 @@ const FeedPage = () => {
   }, [userdetailsStatus])
 
   useEffect(() => {
+    if(userdetailsStatus===0)return ;
     let observer = null;
     if (userdetailsStatus !== 0) {
       observer = new IntersectionObserver(() => {
@@ -63,6 +57,8 @@ const FeedPage = () => {
     };
   }, [userdetailsStatus]);
 
+
+
   return (
     <span className="w-full flex justify-center ">
       <Outlet />
@@ -71,7 +67,7 @@ const FeedPage = () => {
         {posts.map((post) => (
           <Post key={post.id} data={post} />
         ))}
-        <div ref={marker} className="mt-4"></div>
+        <div ref={marker} className="mt-4 mb-20"></div>
         {isLoading && (
           <>
             <LoadingPost />
@@ -80,7 +76,7 @@ const FeedPage = () => {
         )}
       </span>
       <Footer />
-      <section className="fixed right-0 h-full w-1/5 justify-start lg:flex hidden">
+      <section className=" fixed right-0 h-full w-1/5 justify-start lg:flex hidden">
         <div onClick={()=>navigate("/post/create")} className="flex justify-center text-center w-11/12 items-center px-4 rounded-full bg-white h-16 mt-10 border-2 border-slate-300 text-gray-800 cursor-pointer">
           <span className="w-10 h-10 mr-2 rounded-full border-4 flex justify-center items-center text-2xl text-accent border-accent"><i className="fa-solid fa-plus"></i></span>Start writing a post</div>
       </section>
@@ -88,7 +84,7 @@ const FeedPage = () => {
   );
 };
 
-export default FeedPage;
+export default memo(FeedPage);
 
 
 
@@ -96,7 +92,7 @@ export default FeedPage;
 
 const LoadingPost = () => {
   return (
-    <div className=" transition-all cursor-pointer relative border border-gray-400 hover:shadow-md hover:shadow-[#0000003a] rounded-xl my-4 w-[95%] max-w-[700px] bg-white px-3 py-8 h-min text-textcolor">
+    <div className=" transition-all cursor-pointer relative border border-gray-400 hover:shadow-md hover:shadow-[#0000003a] rounded-xl my-4 w-[95%] max-w-[800px] bg-white px-3 py-8 h-min text-textcolor">
       <span className="flex items-center">
         {/* Avatar */}
         <span className="relative bg-slate-300 rounded-full min-h-14 min-w-14 overflow-hidden inline-block">

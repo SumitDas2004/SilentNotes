@@ -13,12 +13,18 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PostDetails from "../src/FeedPage/PostDetails.jsx";
 import FeedPage from "./FeedPage/FeedPage.jsx";
 import Navbar from "./Navbar.jsx";
+import { ScrollRestoration } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <>
+        <ScrollRestoration
+          getKey={(location, matches) => {
+            return location.pathname;
+          }}
+        />
         <Navbar />
         <App />
       </>
@@ -27,33 +33,35 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <FeedPage />,
+        children: [
+          {
+            path: "/auth",
+            element: <LoginRegisterIndex />,
+            children: [
+              {
+                path: "/auth/login",
+                element: <Login />,
+              },
+              {
+                path: "/auth/register",
+                element: <Register />,
+              },
+              {
+                path: "/auth/otp",
+                element: <OTPValidation />,
+              },
+            ],
+          },
+          {
+            path: "/post/create",
+            element: <CreatePost />,
+          },
+        ],
       },
       {
         path: "/post/details/:id",
         element: <PostDetails />,
       },
-      {
-        path: "/post/create",
-        element: <CreatePost />,
-      },
-      {
-        path: "/auth",
-        element: <LoginRegisterIndex />,
-        children: [
-          {
-            path: "/auth/login",
-            element: <Login />,
-          },
-          {
-            path: "/auth/register",
-            element: <Register />,
-          },
-          {
-            path: "/auth/otp",
-            element: <OTPValidation />,
-          },
-        ],
-      }
     ],
   },
 ]);

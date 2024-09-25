@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Footer = () => {
     const navigate = useNavigate()
   return (
-    <footer className="h-16 w-full bottom-0  lg:hidden fixed bg-primary flex justify-center items-center">
+    <footer className="h-16 w-full bottom-0  lg:hidden fixed bg-primary flex justify-center items-center z-30">
       <button
         onClick={()=>navigate("/post/create")}
         title="Create post"

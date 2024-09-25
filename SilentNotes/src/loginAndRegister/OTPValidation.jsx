@@ -36,7 +36,7 @@ const OTPValidation = () => {
         setInputFieldState={setOtp}
       />
       <RippleButton
-        value={!validating ? "Verify" : <ClipLoader size="20" color="white" />}
+        value={!validating ? "Verify" : <ClipLoader size="20px" color="white" />}
         onMouseDown={() => {
           if (otp.length === 6 && isIntString(otp)) {
             setValidating(true);

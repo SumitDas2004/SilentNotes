@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 import { useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
@@ -98,7 +98,7 @@ const PostDetails = () => {
   }, [postDetails]);
 
   return (
-    <section className="mb-10 max-w-[700px] transition-all cursor-pointer relative border border-gray-400 hover:shadow-lg rounded-xl my-4 w-[95%] bg-white px-3 py-8 h-min text-textcolor">
+    <section className=" pb-20 max-w-[800px] transition-all cursor-pointer border border-gray-400 hover:shadow-lg rounded-xl mt-4 w-[95%] bg-white px-3 py-8 h-min text-textcolor absolute z-10">
       {postDetails === null && (
         <div className="w-full flex justify-center items-center mt-10">
           <ClipLoader color="gray" size="20px" />
@@ -216,10 +216,11 @@ const PostDetails = () => {
         </>
       )}
     </section>
+
   );
 };
 
-export default PostDetails;
+export default memo(PostDetails);
 
 const LoadingComments = () => {
   return (

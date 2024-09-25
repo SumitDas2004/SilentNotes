@@ -35,7 +35,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between h-16 shadow-xl w-screen fixed top-0 bg-primary z-10">
+    <nav className="z-30 flex items-center justify-between h-16 shadow-xl w-screen fixed top-0 bg-primary">
       <span className="h-12 w-12 ml-6 flex items-center">
         <img src="https://img.icons8.com/?size=100&id=tNHdLq0L6260&format=png&color=000000" />
         <span
