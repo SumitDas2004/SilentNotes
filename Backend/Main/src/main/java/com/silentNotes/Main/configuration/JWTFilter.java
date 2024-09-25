@@ -52,7 +52,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 if (username != null && expiresAt != null && expiresAt.after(new Date(System.currentTimeMillis()))) {
                     UserDetails user = userDetailsService.loadUserByUsername(username);
                     if (user != null) {
-                        if(request.getRequestURI().startsWith("/user/details") || request.getRequestURI().startsWith("/otp/") || user.isEnabled()) {
+                        if(request.getRequestURI().startsWith("/user/details") || request.getRequestURI().startsWith("/user/logout") || request.getRequestURI().startsWith("/otp/") || user.isEnabled()) {
                             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
                             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

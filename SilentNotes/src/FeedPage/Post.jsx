@@ -1,7 +1,6 @@
 import React, { memo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import "../animations.css";
-import "./linkStyle.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
