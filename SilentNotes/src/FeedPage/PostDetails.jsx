@@ -33,11 +33,13 @@ const PostDetails = () => {
   const throttleSeed = useRef();
 
   const [comments, setComments] = useState([]);
-  const isUserAuthenticationDone = useRef(false)
+
+  // Used to ensure that postdetails is fetched only once
+  const isPostDetailsFetched = useRef(false)
 
   useEffect(() => {
-    if (userdetailsStatus !== 0 && !isUserAuthenticationDone.current) {
-      isUserAuthenticationDone.current = true
+    if (userdetailsStatus !== 0 && !isPostDetailsFetched.current) {
+      isPostDetailsFetched.current = true
       axios({
         url:
           import.meta.env.VITE_BACKEND +

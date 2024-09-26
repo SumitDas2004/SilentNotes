@@ -4,8 +4,11 @@ const PostReducer = createSlice({
   name: "postReducer",
   initialState: {
     posts: [],
-    pageNumber: 0,
-    visitedPosts: []
+    visitedPosts: [],
+    cursor:{
+      lastId:"a",
+      lastCreatedAt:new Date().toJSON()
+    }
   },
   reducers: {
     addPosts: (state, action) => {
@@ -19,12 +22,13 @@ const PostReducer = createSlice({
     //   console.log(current(state.posts));
       state.posts = newState
     },
-    nextPage:(state)=>{
-      state.pageNumber+=1;
+    nextPage:(state, action)=>{
+      state.cursor.lastCreatedAt = action.payload.lastCreatedAt
+      state.cursor.lastId = action.payload.lastId
     },
     visitPost:(state, action)=>{
       state.visitedPosts = [...state.visitedPosts, action.payload]
-    }
+    },
   },
 });
 

@@ -17,13 +17,10 @@ const FeedPage = () => {
   const userdetailsStatus = useSelector((state) => state.userdetails.status);
   const posts = useSelector(state=>state.posts.posts)  
   const [isLoading, setIsLoading] = useState(true)
-  const pageNumberState = useSelector(state=>state.posts.pageNumber)
-  const pageNumber = useRef(pageNumberState);
+  const cursor = useSelector(state=>state.posts.cursor)
   const marker = useRef();
 
-useEffect(()=>{
-    pageNumber.current = pageNumberState
-  }, [pageNumberState])
+  const cursorRef = useRef(cursor)
 
   const getFeed = useCallback( async () => {
     try {
@@ -31,16 +28,23 @@ useEffect(()=>{
       const { data } = await axios({
         url:
           import.meta.env.VITE_BACKEND +
-          `/post/feed?pageNumber=${pageNumber.current}&pageSize=3 ${
+          `/post/feed?pageSize=3 ${
             userId && "&userId=" + userId
           }`,
-        method: "GET",
+          data:{
+            lastCreatedAt:cursorRef.current.lastCreatedAt,
+            lastId:cursorRef.current.lastId
+          },
+        method: "POST",
       });      
       dispatch(addPosts(data.data))
-      if (data.data.length > 0) dispatch(nextPage())
-      setIsLoading(false)
+      if (data.data.length > 0){
+          const lastPost = data.data[data.data.length-1]
+         dispatch(nextPage({lastCreatedAt:lastPost.createdAt, lastId:lastPost.id}))
+      }
     } catch ({ response }) {
       toast.error(response.data.error || "Something went wrong");
+    }finally{
       setIsLoading(false)
     }
   }, [userdetailsStatus])
@@ -60,6 +64,10 @@ useEffect(()=>{
       }
     };
   }, [userdetailsStatus]);
+
+  useEffect(()=>{
+    cursorRef.current = cursor
+  }, [cursor])
 
 
 

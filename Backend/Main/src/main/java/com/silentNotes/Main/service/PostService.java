@@ -14,10 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,14 +57,14 @@ public class PostService {
         return postDao.save(post);
     }
 
-    public List<FeedResponseDTO> getFeed(int pageNumber, int pageSize, String userId){
+    public List<FeedResponseDTO> getFeed(Date createdAt, String id, int pageSize, String userId){
         Users user = userService.getUserById(userId);
-        Page<Post> posts = postDao.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));
+        List<Post> posts = postDao.getPosts(createdAt, id, pageSize);
         return posts.stream().map(post -> FeedResponseDTO.convertToFeedResponseDTO(post, user)).collect(Collectors.toList());
     }
 
-    public List<FeedResponseDTO> getFeed(int pageNumber, int pageSize){
-        Page<Post> posts = postDao.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));
+    public List<FeedResponseDTO> getFeed(Date createdAt, String id, int pageSize){
+        List<Post> posts = postDao.getPosts(createdAt, id, pageSize);
         return posts.stream().map(FeedResponseDTO::convertToFeedResponseDTO).collect(Collectors.toList());
     }
 
