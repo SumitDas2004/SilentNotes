@@ -49,7 +49,6 @@ public class GetCommentReplyDTO {
                 .userId(userId)
                 .commentReply(data)
                 .build();
-        System.out.println(userId+" "+data.getLikes()+" "+data.getLikes().contains(like));
         return GetCommentReplyDTO.builder()
                 .collegeDomain(Utils.extractDomain(data.getUser().getEmail()))
                 .id(data.getId())
