@@ -28,7 +28,7 @@ const FeedPage = () => {
       const { data } = await axios({
         url:
           import.meta.env.VITE_BACKEND +
-          `/post/feed?pageSize=10 ${
+          `/post/feed?pageSize=10${
             userId && "&userId=" + userId
           }`,
           data:{

@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface CommentReplyDao extends JpaRepository<CommentReply, String> {
-    @Query("SELECT c from CommentReply c where c.comment.id=?1")
-    List<CommentReply> findByCommentId(String commentId, PageRequest request);
+    @Query(nativeQuery = true, value = "SELECT * from comment_reply where comment_id=?1 and (created_at, id)<(?2, ?3) ORDER BY created_at DESC, id DESC LIMIT ?4")
+    List<CommentReply> findByCommentId(String commentId, Date lastCreatedAt, String lastReplyId, int pageSize);
 
 }

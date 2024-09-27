@@ -1,6 +1,8 @@
 package com.silentNotes.Main.controller;
 
 import com.silentNotes.Main.dto.comment.CommentReplyDTO;
+import com.silentNotes.Main.dto.comment.GetCommentsRequestDTO;
+import com.silentNotes.Main.dto.comment.GetRepliesRequestDTO;
 import com.silentNotes.Main.dto.post.CommentRequestDTO;
 import com.silentNotes.Main.service.CommentService;
 import jakarta.validation.Valid;
@@ -10,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,11 +34,11 @@ public class CommentController {
     }
 
 
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getComments(@RequestParam(value = "postId") String postId, @RequestParam(value = "userId", required = false) String userId, @RequestParam(value = "pageSize") int pageSize, @RequestParam(value = "pageNumber") int pageNumber){
+    @PostMapping("/getAll")
+    public ResponseEntity<?> getComments(@RequestParam(value = "pageSize") int pageSize, @RequestBody GetCommentsRequestDTO request){
         Map<String, Object> map = new HashMap<>();
         map.put("message", "Success!");
-        map.put("data", userId==null?commentService.findCommentsByPostId(postId, pageNumber, pageSize):commentService.findCommentsByPostId(postId, userId, pageNumber, pageSize));
+        map.put("data", request.getUserId()==null?commentService.findCommentsByPostId(request.getPostId(),  Date.from(Instant.parse(request.getLastCreatedAt())), request.getLastId(), pageSize):commentService.findCommentsByPostId(request.getPostId(),  Date.from(Instant.parse(request.getLastCreatedAt())), request.getLastId(), pageSize, request.getUserId()));
         return new ResponseEntity<>(map, HttpStatusCode.valueOf(200));
     }
 
@@ -46,11 +50,11 @@ public class CommentController {
         return new ResponseEntity<>(map, HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping("/reply/get")
-    public ResponseEntity<?> getReplies(@RequestParam("commentId") String commentId, @RequestParam("pageNumber") Integer pageNumber, @RequestParam("pageSize") Integer pageSize, @RequestParam(name="userId", required = false) String userId){
+    @PostMapping("/reply/get")
+    public ResponseEntity<?> getReplies(@RequestParam("pageSize") Integer pageSize, @RequestBody GetRepliesRequestDTO request){
         Map<String, Object> map = new HashMap<>();
         map.put("message", "Success!");
-        map.put("data", userId!=null?commentService.getReplies(commentId, pageNumber, pageSize, userId):commentService.getReplies(commentId, pageNumber, pageSize));
+        map.put("data", request.getUserId()!=null?commentService.getReplies(request.getCommentId(), Date.from(Instant.parse(request.getLastCreatedAt())), request.getLastId(), pageSize, request.getUserId()):commentService.getReplies(request.getCommentId(),  Date.from(Instant.parse(request.getLastCreatedAt())), request.getLastId(), pageSize));
         return new ResponseEntity<>(map, HttpStatusCode.valueOf(200));
     }
 }

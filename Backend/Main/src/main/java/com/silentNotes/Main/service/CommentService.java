@@ -15,10 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CommentService {
@@ -61,12 +58,12 @@ public class CommentService {
     }
 
 
-    public List<GetCommentDTO> findCommentsByPostId(String postId, int pageNumber, int pageSize){
-        return commentDao.findByPostId(postId, PageRequest.of(pageNumber, pageSize, Sort.by("created_at").descending())).stream().map(GetCommentDTO::toGetCommentDTO).toList();
+    public List<GetCommentDTO> findCommentsByPostId(String postId, Date lastCreatedAt, String lastId, int pageSize){
+        return commentDao.findByPostId(postId, lastCreatedAt, lastId, pageSize).stream().map(GetCommentDTO::toGetCommentDTO).toList();
     }
 
-    public List<GetCommentDTO> findCommentsByPostId(String postId, String userId, int pageNumber, int pageSize){
-        return commentDao.findByPostId(postId, PageRequest.of(pageNumber, pageSize, Sort.by("created_at").descending())).stream().map(post->GetCommentDTO.toGetCommentDTO(post, userId)).toList();
+    public List<GetCommentDTO> findCommentsByPostId(String postId, Date lastCreatedAt, String lastId, int pageSize, String userId){
+        return commentDao.findByPostId(postId, lastCreatedAt, lastId, pageSize).stream().map(post->GetCommentDTO.toGetCommentDTO(post, userId)).toList();
     }
 
 
@@ -85,13 +82,13 @@ public class CommentService {
     }
 
 
-    public List<GetCommentReplyDTO> getReplies(String commentId, int pageNumber, int pageSize){
-        List<CommentReply> replies= commentReplyDao.findByCommentId(commentId, PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));
+    public List<GetCommentReplyDTO> getReplies(String commentId, Date lastCreatedAt, String lastId, int pageSize){
+        List<CommentReply> replies= commentReplyDao.findByCommentId(commentId, lastCreatedAt, lastId, pageSize);
         return replies.stream().map(GetCommentReplyDTO::toGetCommentReplyDTO).toList();
     }
 
-    public List<GetCommentReplyDTO> getReplies(String commentId, int pageNumber, int pageSize, String userId){
-        List<CommentReply> replies= commentReplyDao.findByCommentId(commentId, PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()));
+    public List<GetCommentReplyDTO> getReplies(String commentId, Date lastCreatedAt, String lastId, int pageSize, String userId){
+        List<CommentReply> replies= commentReplyDao.findByCommentId(commentId, lastCreatedAt, lastId, pageSize);
         return replies.stream().map(reply->GetCommentReplyDTO.toGetCommentReplyDTO(reply, userId)).toList();
     }
 

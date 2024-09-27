@@ -1,8 +1,11 @@
 import axios from 'axios';
 import React, { memo, useState } from 'react'
+import DOMPurify from 'dompurify';
 import ReactTimeAgo from 'react-time-ago';
+import { useNavigate } from 'react-router-dom';
 
 const Reply = ({data}) => {
+  const navigate = useNavigate()
   const [isLiked, setIsLiked] = new useState(data.liked);
   const [isLiking, setIsLiking]= useState(false)
   const [likeCnt, setLikeCnt] = useState(data.likeCnt)
@@ -36,8 +39,11 @@ const Reply = ({data}) => {
               <ReactTimeAgo  date={new Date(data.createdAt)} locale="en-US"/>
             </span>
           </span>
-          <div className="mt-2 break-all">
-            {data.body}
+          <div className="mt-2 break-all" dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(data.body.substring(0, 400), {
+            ADD_ATTR: ["target", "className"],
+          }),
+        }}>
           </div>
         </div>
         <span className="mt-1 ml-1 flex flex-row">

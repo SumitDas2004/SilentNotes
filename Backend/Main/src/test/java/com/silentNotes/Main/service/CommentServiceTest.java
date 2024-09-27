@@ -36,7 +36,7 @@ public class CommentServiceTest {
 
 //    @Test
     void getCommentReplyTest() {
-        when(replyDao.findByCommentId(ArgumentMatchers.anyString(), ArgumentMatchers.any(PageRequest.class)))
+        when(replyDao.findByCommentId(ArgumentMatchers.anyString(), ArgumentMatchers.any(Date.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt()))
                 .thenReturn(List.of(
                         CommentReply.builder()
                                 .user(Users.builder()
@@ -62,7 +62,7 @@ public class CommentServiceTest {
                 .updatedAt(new Date(123456789))
                 .body("Hello world")
                 .id("reply1")
-                .build()), commentService.getReplies("", 1, 1, ""));
+                .build()), commentService.getReplies("", new Date(), "", 01));
     }
 
 }

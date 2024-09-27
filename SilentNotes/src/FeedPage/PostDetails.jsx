@@ -33,13 +33,23 @@ const PostDetails = () => {
   const throttleSeed = useRef();
 
   const [comments, setComments] = useState([]);
+  const [cursor, setCursor] = useState({
+    lastId:"z",
+    lastCreatedAt:new Date().toJSON()
+  })
+  const cursorRef = new useRef(cursor)
+
+
+  useEffect(()=>{
+    cursorRef.current = cursor
+  }, [cursor])
 
   // Used to ensure that postdetails is fetched only once
-  const isPostDetailsFetched = useRef(false)
+  const isPostDetailsFetched = useRef(false);
 
   useEffect(() => {
     if (userdetailsStatus !== 0 && !isPostDetailsFetched.current) {
-      isPostDetailsFetched.current = true
+      isPostDetailsFetched.current = true;
       axios({
         url:
           import.meta.env.VITE_BACKEND +
@@ -75,14 +85,17 @@ const PostDetails = () => {
         (element) => {
           setLoadingComments(true);
           axios({
-            url:
-              import.meta.env.VITE_BACKEND +
-              `/comment/getAll?postId=${id}&userId=${userId}&pageNumber=${pageNumber.current}&pageSize=5`,
-            method: "GET",
+            url: import.meta.env.VITE_BACKEND + `/comment/getAll?pageSize=5`,
+            data: {
+              lastId: cursorRef.current.lastId,
+              lastCreatedAt: cursorRef.current.lastCreatedAt,
+              postId: id,
+              userId: userId,
+            },
+            method: "POST",
           })
             .then(({ data }) => {
               setLoadingComments(false);
-              if (data.data.length > 0) pageNumber.current++;
               setComments((comments) => {
                 const set = new Set(comments.map((comment) => comment.id));
                 const newComments = data.data;
@@ -90,6 +103,11 @@ const PostDetails = () => {
                 newComments.forEach((comment) => {
                   if (!set.has(comment.id)) newState.push(comment);
                 });
+                if (data.data.length > 0)
+                setCursor({
+                  lastCreatedAt:data.data[data.data.length-1].createdAt,
+                  lastId:data.data[data.data.length-1].id
+                })
                 return newState;
               });
             })

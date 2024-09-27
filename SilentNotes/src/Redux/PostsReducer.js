@@ -6,7 +6,7 @@ const PostReducer = createSlice({
     posts: [],
     visitedPosts: [],
     cursor:{
-      lastId:"a",
+      lastId:"Z",
       lastCreatedAt:new Date().toJSON()
     }
   },

@@ -25,13 +25,16 @@ const Comment = ({ data }) => {
   const [liking, setLiking] = useState(false);
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replies, setReplies] = useState([]);
-  const [pageNumber, setPageNumber] = useState(0);
+  const [cursor, setCursor] = useState({
+    lastId:"Z",
+    lastCreatedAt:new Date().toJSON()
+  });
   const [loadedReplies, setLoadedReplies] = useState(0);
   const [loadingReplies, setLoadingReplies] = useState(false);
 
   const fetchReplies = useCallback(() => {
     setLoadingReplies(true);
-    getReplies(data, pageNumber, userId)
+    getReplies(data, cursor, userId)
       .then(({ data }) => {
         setReplies((replies) => {
           const set = new Set(replies.map((reply) => reply.id));
@@ -40,9 +43,12 @@ const Comment = ({ data }) => {
           newReplies.forEach((reply) => {
             if (!set.has(reply.id)) newState.push(reply);
           });
-          if (newReplies.length === 5) setPageNumber(pageNumber + 1);
+          if (newReplies.length>0) 
+            setCursor({
+              lastCreatedAt:newReplies[newReplies.length-1].createdAt,
+              lastId:newReplies[newReplies.length-1].id
+            })
           setLoadedReplies(loadedReplies + newReplies.length);
-          setLoadingReplies(false);
           return newState;
         });
       })
@@ -55,9 +61,11 @@ const Comment = ({ data }) => {
             (response && response.data && response.data.error) ||
               "Something went wrong"
           );
+      })
+      .finally(() => {
         setLoadingReplies(false);
       });
-  }, [replies, pageNumber, loadedReplies]);
+  }, [replies, cursor, loadedReplies]);
 
   return (
     <section>
@@ -89,7 +97,14 @@ const Comment = ({ data }) => {
                 <ReactTimeAgo date={new Date(data.createdAt)} locale="en-US" />
               </span>
             </span>
-            <div className="mt-2 break-all">{data.body}</div>
+            <div
+              className="mt-2 break-all"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(data.body.substring(0, 400), {
+                  ADD_ATTR: ["target", "className"],
+                }),
+              }}
+            ></div>
           </div>
           <span className="mt-1 ml-1 flex">
             <span
@@ -253,20 +268,26 @@ const ReplyInput = ({
         }}
         className=" self-end text-sm p-1 text-blue-500 font-bold right-0 mr-2 focus:text-blue-700 active:text-blue-700 transition-all"
       >
-        {!isReplying ? "Post" : <ClipLoader color="rgb(59 130 246 / 1)" size={"25px"} />}
+        {!isReplying ? (
+          "Post"
+        ) : (
+          <ClipLoader color="rgb(59 130 246 / 1)" size={"25px"} />
+        )}
       </button>
     </span>
   );
 };
 
-const getReplies = async (data, pageNumber, userId) => {
+const getReplies = async (data, cursor, userId) => {
   const res = await axios({
-    url:
-      import.meta.env.VITE_BACKEND +
-      `/comment/reply/get?commentId=${
-        data.id
-      }&pageSize=5&pageNumber=${pageNumber}${userId && "&userId=" + userId}`,
-    method: "GET",
+    url: import.meta.env.VITE_BACKEND + `/comment/reply/get?pageSize=5`,
+    method: "POST",
+    data: {
+      commentId: data.id,
+      userId: userId,
+      lastId: cursor.lastId,
+      lastCreatedAt: cursor.lastCreatedAt,
+    },
   });
   return res;
 };
