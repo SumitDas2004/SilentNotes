@@ -202,7 +202,7 @@ const CreatePost = () => {
                 });
             }}
           />
-        </div>
+        </div>z
       </div>
     </div>
   );

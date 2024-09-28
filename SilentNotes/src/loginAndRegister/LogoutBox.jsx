@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import RippleButton from "../RippleButton/RippleButton";
-import axios from "axios";
 import { ClipLoader } from "react-spinners";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../Redux/UserDetailsReducer";
 
 const LogoutBox = ({ setShowLogout, avatarContainer }) => {
+  const dispatch = useDispatch()
   const [loggingOut, setLoggingOut] = useState(false);
-  const navigate = useNavigate()
 
   const logoutEvent = (e) => {
     if (
@@ -29,19 +29,12 @@ const LogoutBox = ({ setShowLogout, avatarContainer }) => {
     >
       <RippleButton
         value={loggingOut?<ClipLoader color="white" size={"20px"}/>:"Logout"}
-        onClick={() => {
+        onClick={async() => {
           if(loggingOut)return ;
           setLoggingOut(true)
-          axios({
-            url: import.meta.env.VITE_BACKEND + "/user/logout",
-            withCredentials: true,
-          }).then((res) => {
-            setLoggingOut(false)
-            navigate("/");
-            window.location.reload();
-          }).catch(()=>{
-            setLoggingOut(false)
-          })
+          await dispatch(logout())
+          setLoggingOut(false)
+          window.location.reload()
         }}
       />
     </div>

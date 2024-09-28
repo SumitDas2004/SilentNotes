@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LogoutBox from "./loginAndRegister/LogoutBox";
 import RippleButton from "./RippleButton/RippleButton";
 import axios from "axios";
-import { userDetails, changeStatus } from "./Redux/UserDetailsReducer";
+import { getUserDetails } from "./Redux/UserDetailsReducer";
 import "./animations.css";
 import { useNavigate } from "react-router-dom";
 
@@ -19,19 +19,7 @@ const Navbar = () => {
   const avatarContainer = useRef();
 
   useEffect(() => {
-    dispatch(changeStatus(0));
-    axios({
-      withCredentials: true,
-      url: import.meta.env.VITE_BACKEND + "/user/details",
-      method: "GET",
-    })
-      .then(({ data }) => {
-        dispatch(userDetails(data.data));
-        dispatch(changeStatus(1));
-      })
-      .catch((err) => {
-        dispatch(changeStatus(-1));
-      });
+    dispatch(getUserDetails())
   }, []);
 
   return (

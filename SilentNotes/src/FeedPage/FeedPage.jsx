@@ -6,55 +6,24 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import "../animations.css";
-import { addPosts, nextPage } from "../Redux/PostsReducer";
+import { fetchPosts, nextPage } from "../Redux/PostsReducer";
 
 
 
 const FeedPage = () => {
   const dispatch = useDispatch()
   const navigate= useNavigate()
-  const userId = useSelector((state) => state.userdetails.id);
   const userdetailsStatus = useSelector((state) => state.userdetails.status);
   const posts = useSelector(state=>state.posts.posts)  
-  const [isLoading, setIsLoading] = useState(true)
-  const cursor = useSelector(state=>state.posts.cursor)
+  const isLoading = useSelector(state=>state.posts.loadingPosts)
   const marker = useRef();
-
-  const cursorRef = useRef(cursor)
-
-  const getFeed = useCallback( async () => {
-    try {
-      setIsLoading(true)
-      const { data } = await axios({
-        url:
-          import.meta.env.VITE_BACKEND +
-          `/post/feed?pageSize=10${
-            userId && "&userId=" + userId
-          }`,
-          data:{
-            lastCreatedAt:cursorRef.current.lastCreatedAt,
-            lastId:cursorRef.current.lastId
-          },
-        method: "POST",
-      });      
-      dispatch(addPosts(data.data))
-      if (data.data.length > 0){
-          const lastPost = data.data[data.data.length-1]
-         dispatch(nextPage({lastCreatedAt:lastPost.createdAt, lastId:lastPost.id}))
-      }
-    } catch ({ response }) {
-      toast.error(response.data.error || "Something went wrong");
-    }finally{
-      setIsLoading(false)
-    }
-  }, [userdetailsStatus])
 
   useEffect(() => {
     let observer = null;
     if (userdetailsStatus !== 0) {
       observer = new IntersectionObserver((elm) => {
         if(elm[0].isIntersecting)
-          getFeed();
+          dispatch(fetchPosts())
       });
       observer.observe(marker.current);
     }
@@ -65,10 +34,6 @@ const FeedPage = () => {
     };
   }, [userdetailsStatus]);
 
-  useEffect(()=>{
-    cursorRef.current = cursor
-  }, [cursor])
-
 
 
   return (
@@ -76,8 +41,8 @@ const FeedPage = () => {
       <Outlet />
 
       <span className=" lg:w-3/5 w-full flex flex-col items-center justify-center">
-        {posts.map((post) => (
-          <Post key={post.id} data={post} />
+        {posts.map((post, ind) => (
+          <Post key={post.id} data={post} index={ind} />
         ))}
         <div ref={marker} className="mt-4"></div>
         {isLoading && (

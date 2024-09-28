@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import CustomInputField from "./CustomInputField/CustomInputField";
 import "./CustomInputField/CustomInputPlaceholderStyle.css";
 import RippleButton from "../RippleButton/RippleButton";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { validate } from "../Redux/UserDetailsReducer";
+import { validateOTP } from "../Redux/UserDetailsReducer";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 
@@ -16,9 +15,9 @@ const OTPValidation = () => {
   const verified = useSelector((state) => state.userdetails.verified);
   const [validating, setValidating] = useState();
   useEffect(() => {
-    if (verified){
-         navigate("/");
-         return 
+    if (verified) {
+      navigate("/");
+      return;
     }
   }, [verified]);
   return (
@@ -36,29 +35,14 @@ const OTPValidation = () => {
         setInputFieldState={setOtp}
       />
       <RippleButton
-        value={!validating ? "Verify" : <ClipLoader size="20px" color="white" />}
-        onMouseDown={() => {
+        value={
+          !validating ? "Verify" : <ClipLoader size="20px" color="white" />
+        }
+        onMouseDown={async () => {
           if (otp.length === 6 && isIntString(otp)) {
             setValidating(true);
-            axios({
-              withCredentials: true,
-              url: import.meta.env.VITE_BACKEND + "/otp/validate/" + otp,
-              method: "GET",
-            })
-              .then(({ data }) => {
-                const res = data.isValid;
-                if (res) {
-                  setOtp("");
-                  dispatch(validate());
-                  toast.success("OTP validated successfully.")
-                } else toast.error("Invalid OTP.");
-              })
-              .catch(({ response }) => {
-                toast.error("Something went wrong.");
-              })
-              .finally(() => {
-                setValidating(false);
-              });
+            await dispatch(validateOTP(otp));
+            setValidating(false);
           } else toast.error("Invalid OTP.");
         }}
       />

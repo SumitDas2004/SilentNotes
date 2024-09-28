@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import ReactTimeAgo from "react-time-ago";
-import { visitPost } from "../Redux/PostsReducer";
+import { likePost, visitPost } from "../Redux/PostsReducer";
 
 
 
-const Post = ({ data }) => {
+const Post = ({ data, index }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -101,8 +101,9 @@ const Post = ({ data }) => {
                   method: "POST",
                   withCredentials: true,
                 });
-                setLikes((likes) => likes + res.data.event);
-                setIsLiked(res.data.event == 1);
+                dispatch(likePost({event:res.data.event, index:index}))
+                setIsLiked(res.data.event===1)
+                setLikes(res.data.event+likes)
                 throttleSeed.current = false;
                 setLiking(false);
               }

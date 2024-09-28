@@ -26,7 +26,7 @@ const Comment = ({ data }) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replies, setReplies] = useState([]);
   const [cursor, setCursor] = useState({
-    lastId:"Z",
+    lastId:"{",
     lastCreatedAt:new Date().toJSON()
   });
   const [loadedReplies, setLoadedReplies] = useState(0);
